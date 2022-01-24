@@ -3,10 +3,6 @@ import { galleryItems } from './gallery-items.js';
 // Change code below this line
 
 
-
-
-
-
 const gallery = document.querySelector('.gallery');
 
 
@@ -28,21 +24,36 @@ function createGallaryCards(images) {
 const cards = createGallaryCards(galleryItems);
 gallery.innerHTML = cards;
 
+let instance = {};
 
 gallery.addEventListener('click', (evt) => {
-        evt.preventDefault();
-        const img = evt.target.dataset.source;        
-        const instance = basicLightbox.create(`
-        <img src="${img}">`);                
-    instance.show(() => {
-        window.addEventListener('keydown', (evt) => {
-             if (evt.code === 'Escape') {
-        instance.close();
-        console.log('1');
+    evt.preventDefault();
+    const img = evt.target.dataset.source;        
+    createInstance(img);    
+})
+  
+function createInstance(img) {
+     instance = basicLightbox.create(`
+            <img src="${img}">`,
+        {
+            onShow: () => {
+                
+                document.addEventListener(('keydown'), escClose)
+            },
+            onClose: () => {
+                
+                document.removeEventListener(('keydown'), escClose)
+            }
+        });
+    
+    instance.show();
+}
+
+function escClose(evt) {
+    
+    if (evt.code === 'Escape') {
+        
+        return instance.close();        
+        }
     }
-         } );     
-        });      
-    })
-
-
 
